@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by tpps8 on 2021/11/15
@@ -14,7 +15,7 @@ import androidx.room.Query
 interface UserDao {
 
     @Query("SELECT * FROM user")
-    fun getAll(): List<User>
+    fun getAll(): Flow<List<User>>
 
     @Query("SELECT * FROM user WHERE uid IN (:userIds)")
     fun loadAllByIds(userIds: IntArray): List<User>
@@ -23,8 +24,11 @@ interface UserDao {
     fun findByName(name: String): User
 
     @Insert
-    fun insertAll(vararg users: User)
+    suspend fun insertAll(vararg users: User)
 
     @Delete
-    fun delete(user: User)
+    suspend fun delete(user: User)
+
+    @Query("DELETE FROM user")
+    fun deleteAll()
 }
